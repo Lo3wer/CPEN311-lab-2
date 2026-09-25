@@ -22,7 +22,7 @@ module statemachine(input slow_clock, input resetb,
     logic [3:0] present_state;
     logic [7:0] output_vector;
 
-    always_ff @(posedge slow_clock) begin   //update present_state based on game rules
+    always_ff @(posedge slow_clock or negedge resetb) begin   //update present_state based on game rules
         if(!resetb)
             present_state <= `S0;
 
@@ -43,17 +43,18 @@ module statemachine(input slow_clock, input resetb,
                         present_state <= `S5;
                 end
                 //do nothing at S5 since it's the end, need to press reset to go back to S0
-                `S6: begin
+
+                `S6: present_state <= `S7;  //allow reg to output new_card
+                `S7: begin
                     if((dscore == 6 && (pcard3 == 6 || pcard3 == 7))
                     || (dscore == 5 && (pcard3 >= 4 && pcard3 <= 7))
                     || (dscore == 4 && (pcard3 >= 2 && pcard3 <= 7))
                     || (dscore == 3 && pcard3 != 8)
                     || (dscore >= 0 && dscore <= 2))
-                        present_state <= `S7;
+                        present_state <= `S8;
                     else
                         present_state <= `S5; //covers both dscore == 7 and all other cases that dont satisfy the bacarat rules to get a 3rd card
                 end
-                `S7: present_state <= `S5;
                 `S8: present_state <= `S5;
                 `S5: present_state <= `S5;
                 default: present_state <= `S0;
@@ -62,10 +63,11 @@ module statemachine(input slow_clock, input resetb,
     end
     always_comb begin
         case(present_state)
-            `S1: output_vector = 8'b10000000;
-            `S2: output_vector = 8'b00010000;
-            `S3: output_vector = 8'b01000000;
-            `S4: output_vector = 8'b00001000;
+            `S0: output_vector = 8'b10000000;
+            `S1: output_vector = 8'b00010000;
+            `S2: output_vector = 8'b01000000;
+            `S3: output_vector = 8'b00001000;
+            //S4,S6 do nothing to allow ff to clock dcard2 to output
             `S5: begin 
                 if(pscore > dscore)
                     output_vector = 8'b00000010;
@@ -75,7 +77,6 @@ module statemachine(input slow_clock, input resetb,
                     output_vector = 8'b00000011;
             end
             `S6: output_vector = 8'b00100000;
-            `S7: output_vector = 8'b00000100;
             `S8: output_vector = 8'b00000100;
             default: output_vector = 8'b00000000;
         endcase

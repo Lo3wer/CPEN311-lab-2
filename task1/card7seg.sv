@@ -17,7 +17,7 @@ module card7seg(input [3:0] SW, output [6:0] HEX0);
          4'b1010: hex_out = 7'b1000000; // 10 -> "0"
          4'b1011: hex_out = 7'b1100001; // Jack -> "J"
          4'b1100: hex_out = 7'b0011000; // Queen -> "q"
-         4'b1101: hex_out = 7'b0001001; // King -> "K"
+         4'b1101: hex_out = 7'b0001001; // King -> "H"
          default: hex_out = 7'b1111111; // 1110, 1111: not used -> blank
       endcase
    end
