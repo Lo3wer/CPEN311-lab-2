@@ -13,5 +13,7 @@ module datapath(input slow_clock, input fast_clock, input resetb,
 //
 // Follow the block diagram in the Lab 1 handout closely as you write this code.
 
+
+
 endmodule
 
