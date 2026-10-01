@@ -5,7 +5,7 @@ module tb_scorehand();
 	logic [3:0] card3;
 	logic [3:0] total;
 
-	scorehand sh (.card1(card1), .card2(card2), .card3(card3), .total(total));
+	scorehand sh(.card1(card1), .card2(card2), .card3(card3), .total(total));
 
 	task check_score(input logic [3:0] test_card1, input logic [3:0] test_card2,
 		input logic [3:0] test_card3, input logic [3:0] expected_total);
@@ -13,7 +13,7 @@ module tb_scorehand();
 			card1 = test_card1;
 			card2 = test_card2;
 			card3 = test_card3;
-			#1;
+			#10;
 
 			if (total !== expected_total) begin
 				$error("Error: card1=%0d card2=%0d card3=%0d: expected total=%0d, got total=%0d", test_card1, test_card2, test_card3, expected_total, total);
