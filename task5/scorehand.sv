@@ -21,6 +21,6 @@ module scorehand(input [3:0] card1, input [3:0] card2, input [3:0] card3, output
     end
 
     assign sum = ({2'b0, score1} + {2'b0, score2} + {2'b0, score3}) % 6'd10;
-    assign total = sum[3:0];
+    assign total = sum[3:0];    //need 4 bits to represent 9
 endmodule
 
